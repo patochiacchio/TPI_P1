@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "tablero.h"
 #include "render.h"
+#include "entrada.h"
 
 /**
  * Crea un tablero vacío 9x9 con 10 minas
@@ -95,6 +96,34 @@ int main(void)
     {
         puts("========== Buscaminas ==========");
         render_imprimir(tablero);
+    }
+
+    /* Entrada de datos con validación de jugada */
+    if (rv == EXIT_SUCCESS)
+    {
+        puts("Ingrese jugada (R/B/H/S) fila columna, ej: R 3 4");
+        {
+            accion_t accion = ACCION_REVELAR;
+            size_t fila = 0;
+            size_t columna = 0;
+            int ok_entrada = 0;
+
+            ok_entrada = entrada_leer_jugada(&accion, &fila, &columna, tablero->filas, tablero->columnas);
+
+            if (ok_entrada == 1)
+            {
+                const char *accion_txt = "REVELAR";
+                if (accion == ACCION_BANDERA) { accion_txt = "BANDERA"; }
+                else if (accion == ACCION_HINT) { accion_txt = "HINT"; }
+                else if (accion == ACCION_SALIR) { accion_txt = "SALIR"; }
+
+                printf("OK: %s (%zu, %zu)\n", accion_txt, fila, columna);
+            }
+            else
+            {
+                printf("Entrada inválida.\n");
+            }
+        }
     }
 
     /* Liberación de memoria */
