@@ -153,3 +153,78 @@ static void liberar_grilla(celda_t **grilla, size_t filas)
     }
     free(grilla);
 }
+
+int tablero_colocar_minas(tablero_t *tablero, unsigned int semilla)
+{
+    int ok = 1;
+    size_t total = 0;
+    size_t a_colocar = 0;
+    size_t i = 0;
+    size_t k = 0;
+    size_t *posiciones = NULL;
+
+    if (tablero == NULL)
+    {
+        ok = 0;
+    }
+
+    /* calcular total de celdas y reservar vector 0..total-1 */
+    if (ok == 1)
+    {
+        total = tablero->filas * tablero->columnas;
+        a_colocar = tablero->cantidad_minas;
+        if (a_colocar > total)
+        {
+            a_colocar = total;
+        }
+
+        posiciones = (size_t *)calloc(total, sizeof(*posiciones));
+        if (posiciones == NULL)
+        {
+            ok = 0;
+        }
+    }
+
+    if (ok == 1)
+    {
+        i = 0;
+        while (i < total)
+        {
+            posiciones[i] = i;
+            i = i + 1;
+        }
+
+        srand(semilla);
+        if (total > 0)
+        {
+            k = total - 1;
+            while (k > 0)
+            {
+                size_t j = (size_t)(rand() % (k + 1));
+                size_t tmp = posiciones[k];
+                posiciones[k] = posiciones[j];
+                posiciones[j] = tmp;
+                k = k - 1;
+            }
+        }
+
+        i = 0;
+        while (i < a_colocar)
+        {
+            size_t idx = posiciones[i];
+            size_t fila = idx / tablero->columnas;
+            size_t columna = idx % tablero->columnas;
+            tablero->grilla[fila][columna].es_mina = true;
+            i = i + 1;
+        }
+    }
+
+    /* limpieza local */
+    if (posiciones != NULL)
+    {
+        free(posiciones);
+        posiciones = NULL;
+    }
+
+    return ok;
+}
