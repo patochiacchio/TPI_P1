@@ -228,3 +228,59 @@ int tablero_colocar_minas(tablero_t *tablero, unsigned int semilla)
 
     return ok;
 }
+
+int tablero_contar_vecinos(tablero_t *tablero)
+{
+    int ok = 1;
+
+    if (tablero == NULL)
+    {
+        ok = 0;
+    }
+
+    if (ok == 1)
+    {
+        size_t fila = 0;
+
+        while (fila < tablero->filas)
+        {
+            size_t columna = 0;
+
+            while (columna < tablero->columnas)
+            {
+                /* solo se cuenta si NO es mina */
+                if (tablero->grilla[fila][columna].es_mina == false)
+                {
+                    unsigned char conteo = 0;
+                    int df[8] = {-1, -1, -1,  0, 0,  1, 1, 1}; /* preguntar si conviene usar ptrdiff_t o con int estamos bien (funciona con int) */
+                    int dc[8] = {-1,  0,  1, -1, 1, -1, 0, 1};
+                    int k = 0; /* i = filas, j = columnas, k = otras_cosas */
+
+                    /* se recorren los 8 vecinos con offsets */
+                    while (k < 8)
+                    {
+                        int fila_vecina = (int)fila + df[k];
+                        int columna_vecina = (int)columna + dc[k];
+
+                        if (fila_vecina >= 0 && columna_vecina >= 0 && fila_vecina < (int)tablero->filas && columna_vecina < (int)tablero->columnas)
+                        {
+                            if (tablero->grilla[(size_t)fila_vecina][(size_t)columna_vecina].es_mina == true)
+                            {
+                                conteo = (unsigned char)(conteo + 1);
+                            }
+                        }
+                        k = k + 1;
+                    }
+
+                    tablero->grilla[fila][columna].minas_alrededor = conteo;
+                }
+
+                columna = columna + 1;
+            }
+
+            fila = fila + 1;
+        }
+    }
+
+    return ok;
+}

@@ -82,4 +82,14 @@ bool tablero_en_rango(const tablero_t *tablero, size_t fila, size_t columna);
  */
 int tablero_colocar_minas(tablero_t *tablero, unsigned int semilla);
 
+/**
+ * Completa el número de minas vecinas (0..8) en cada celda no-mina.
+ *
+ * @param tablero Puntero al tablero.
+ * @pre tablero != NULL.
+ * @returns 1 si ok, 0 si error.
+ * @post Para cada celda sin mina, se actualiza minas_alrededor con el conteo.
+ */
+int tablero_contar_vecinos(tablero_t *tablero);
+
 #endif
