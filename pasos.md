@@ -46,4 +46,6 @@ buscaminas/
   │   ├─ tablero.c
   │   ├─ render.h
   │   └─ render.c
+  │   ├─ entrada.h
+  │   ├─ entrada.c
   └─ Makefile (VER)
