@@ -133,7 +133,14 @@ int main(void)
                 }
                 else if (accion == ACCION_BANDERA)
                 {
-                    puts("BANDERA: sin implementar");
+                    if (tablero_alternar_bandera(tablero, fila, columna) == 1)
+                    {
+                        render_imprimir(tablero); /* ver el F en pantalla */
+                    }
+                    else
+                    {
+                        puts("No se pudo alternar bandera");
+                    }
                 }
                 else if (accion == ACCION_HINT)
                 {

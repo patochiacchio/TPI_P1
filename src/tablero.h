@@ -108,5 +108,19 @@ int tablero_contar_vecinos(tablero_t *tablero);
  */
 int tablero_revelar(tablero_t *tablero, size_t fila, size_t columna, int *encontro_mina);
 
+/**
+ * Alterna la bandera en la celda indicada.
+ * - Si la celda está OCULTA -> pasa a BANDERA.
+ * - Si la celda está en BANDERA -> vuelve a OCULTA.
+ * - Si la celda está REVELADA -> no cambia.
+ *
+ * @param tablero Puntero al tablero.
+ * @param fila Índice de fila.
+ * @param columna Índice de columna.
+ * @pre tablero != NULL, (fila,columna) en rango.
+ * @returns 1 si ok, 0 si error (puntero inválido / fuera de rango).
+ * @post Solo afecta celdas no reveladas.
+ */
+int tablero_alternar_bandera(tablero_t *tablero, size_t fila, size_t columna);
 
 #endif

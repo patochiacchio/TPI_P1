@@ -456,3 +456,40 @@ int tablero_revelar(tablero_t *tablero, size_t fila, size_t columna, int *encont
 
     return ok;
 }
+
+int tablero_alternar_bandera(tablero_t *tablero, size_t fila, size_t columna)
+{
+    int ok = 1;
+
+    if (tablero == NULL)
+    {
+        ok = 0;
+    }
+    if (ok == 1)
+    {
+        if (tablero_en_rango(tablero, fila, columna) == false)
+        {
+            ok = 0;
+        }
+    }
+
+    if (ok == 1)
+    {
+        celda_t *celda = &tablero->grilla[fila][columna];
+
+        if (celda->estado == CELDA_REVELADA)
+        {
+            /* si está revelada, no cambio nada */
+        }
+        else if (celda->estado == CELDA_BANDERA)
+        {
+            celda->estado = CELDA_OCULTA;  /* quitar bandera */
+        }
+        else /* OCULTA */
+        {
+            celda->estado = CELDA_BANDERA; /* poner bandera */
+        }
+    }
+
+    return ok;
+}
