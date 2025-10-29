@@ -32,4 +32,20 @@ typedef enum
  */
 int entrada_leer_jugada(accion_t *accion, size_t *fila, size_t *columna, size_t max_filas, size_t max_columnas);
 
+/**
+ * Lee configuración del tablero desde stdin en una sola pasada.
+ * Formato esperado: <filas> <columnas> <minas>
+ * Valida:
+ * - 5 <= filas   <= 30
+ * - 5 <= columnas<= 30
+ * - 1 <= minas   <  filas*columnas
+ *
+ * @param filas     puntero de salida a filas.
+ * @param columnas  puntero de salida a columnas.
+ * @param minas     puntero de salida a minas.
+ * @returns 1 si válido; 0 si formato/rangos inválidos.
+ * @post No imprime nada.
+ */
+int entrada_leer_configuracion(size_t *filas, size_t *columnas, size_t *minas);
+
 #endif /* ENTRADA_H */

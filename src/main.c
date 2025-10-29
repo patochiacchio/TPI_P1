@@ -14,9 +14,31 @@ int main(void)
     int rv = EXIT_SUCCESS;
     tablero_t *tablero = NULL;
 
-    /* Reserva e inicializa la estructura base */
-    tablero = tablero_crear(9, 9, 10);
+    // /* Reserva e inicializa la estructura base */
+    // tablero = tablero_crear(9, 9, 10);
     
+    /* Configuración dinámica (filas columnas minas) */
+    size_t filas = 9u;
+    size_t columnas = 9u;
+    size_t minas = 10u;
+    int configurado = 0;
+
+    puts("Configurar tablero (filas columnas minas). Ej: 9 9 10");
+    while (configurado == 0)
+    {
+        int lectura_ok = entrada_leer_configuracion(&filas, &columnas, &minas);
+        if (lectura_ok == 1)
+        {
+            configurado = 1;
+        }
+        else
+        {
+            puts("Valores inválidos. Intente de nuevo (filas columnas minas):");
+        }
+    }
+
+    /* crear tablero con los valores ingresados */
+    tablero = tablero_crear(filas, columnas, minas);
     if (tablero == NULL)
     {
         fprintf(stderr, "Error: sin memoria para tablero.\n");
@@ -27,7 +49,9 @@ int main(void)
     if (rv == EXIT_SUCCESS)
     {
         unsigned int semilla = (unsigned int)time(NULL) ^ (unsigned int)clock();
-        printf("Semilla usada: %u\n", semilla);  // debug
+        
+        // printf("Semilla usada: %u\n", semilla);  // debug
+        
         if (tablero_colocar_minas(tablero, semilla) == 0)
         {
             fprintf(stderr, "Error: no se pudieron colocar las minas.\n");
@@ -181,6 +205,7 @@ int main(void)
         {
             puts("Saliste del juego.");
         }
+        /* agregar alguna animacion o algo copado con sleep() */
         else if (estado == JUEGO_GANADO)
         {
             render_imprimir(tablero);
