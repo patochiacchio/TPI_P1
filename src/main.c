@@ -114,7 +114,7 @@ int main(void)
 
             if (ok_entrada == 1)
             {
-                /* Solo ACCION_REVELAR, falta implementar el resto de acciones */
+                /* Acciones de jugadas (R/B/H/S) */
                 if (accion == ACCION_REVELAR)
                 {
                     int encontro_mina = 0;
@@ -122,7 +122,7 @@ int main(void)
                     {
                         if (encontro_mina == 1)
                         {
-                            puts("Pisaste una mina");
+                            puts("Pisaste una mina"); /* mejorar esto */
                         }
                         render_imprimir(tablero);
                     }
@@ -135,7 +135,7 @@ int main(void)
                 {
                     if (tablero_alternar_bandera(tablero, fila, columna) == 1)
                     {
-                        render_imprimir(tablero); /* ver el F en pantalla */
+                        render_imprimir(tablero);
                     }
                     else
                     {

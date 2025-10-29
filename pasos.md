@@ -39,13 +39,15 @@ Crear makefile, mejorar interfaz, crear README.md, emprolijar codigo y repositor
 
 Estructura del proyecto (en principio)
 
+```
 buscaminas/
   ├─ src/
   │   ├─ main.c
   │   ├─ tablero.h
   │   ├─ tablero.c
   │   ├─ render.h
-  │   └─ render.c
+  │   ├─ render.c
   │   ├─ entrada.h
-  │   ├─ entrada.c
+  │   └─ entrada.c
   └─ Makefile (VER)
+```
