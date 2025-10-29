@@ -36,7 +36,7 @@ typedef struct
 } tablero_t;
 
 /**
- * Crea un tablero vacío (sin colocar minas aún).
+ * Crea un tablero vacío
  * Reserva memoria y deja todas las celdas ocultas, sin minas y con contador 0.
  * 
  * @param filas cantidad de filas (>0).
@@ -71,14 +71,14 @@ void tablero_destruir(tablero_t *tablero);
 bool tablero_en_rango(const tablero_t *tablero, size_t fila, size_t columna);
 
 /**
- * Coloca minas de forma pseudoaleatoria y reproducible por semilla.
+ * Coloca minas de forma aleatoria y reproducible por semilla.
  *
  * @param tablero Puntero al tablero.
  * @param semilla Valor para srand(); misma semilla => mismo patrón.
  * @pre tablero != NULL.
  * @returns 1 si ok, 0 si error (memoria o puntero inválido).
  * @post Se marcan exactamente tablero->cantidad_minas celdas como minas,
- * o todas si cantidad_minas > filas*columnas.
+ *       o todas si cantidad_minas > filas*columnas.
  */
 int tablero_colocar_minas(tablero_t *tablero, unsigned int semilla);
 
@@ -91,5 +91,22 @@ int tablero_colocar_minas(tablero_t *tablero, unsigned int semilla);
  * @post Para cada celda sin mina, se actualiza minas_alrededor con el conteo.
  */
 int tablero_contar_vecinos(tablero_t *tablero);
+
+/**
+ * Revela la celda indicada. Si es 0, expande la zona.
+ *
+ * @param tablero Puntero al tablero.
+ * @param fila Índice de fila.
+ * @param columna Índice de columna.
+ * @param encontro_mina puntero de salida: 1 si se reveló una mina, 0 si no.
+ * @pre tablero != NULL, encontro_mina != NULL, (fila,columna) en rango.
+ * @returns 1 si ok, 0 si error (puntero inválido / fuera de rango).
+ * @post Si la celda no estaba revelada ni con bandera:
+ *       - Si es mina: no cambia el estado visible y *encontr_mina=1.
+ *       - Si no es mina y vale >0: se revela solo esa celda.
+ *       - Si vale 0: se revelan ceros conectados + borde numérico.
+ */
+int tablero_revelar(tablero_t *tablero, size_t fila, size_t columna, int *encontro_mina);
+
 
 #endif

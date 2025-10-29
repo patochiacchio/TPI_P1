@@ -284,3 +284,175 @@ int tablero_contar_vecinos(tablero_t *tablero)
 
     return ok;
 }
+
+int tablero_revelar(tablero_t *tablero, size_t fila, size_t columna, int *encontro_mina)
+{
+    int ok = 1;
+
+    if (tablero == NULL || encontro_mina == NULL)
+    {
+        ok = 0;
+    }
+    if (ok == 1)
+    {
+        if (tablero_en_rango(tablero, fila, columna) == false)
+        {
+            ok = 0;
+        }
+    }
+
+    if (ok == 1)
+    {
+        celda_t *celda = &tablero->grilla[fila][columna];
+        *encontro_mina = 0; /* por defecto, no cayó en mina */
+
+        if (celda->estado == CELDA_REVELADA || celda->estado == CELDA_BANDERA)
+        {
+            /* no hago nada si ya estaba revelada o marcada con bandera */   
+        }
+        else if (celda->es_mina == true)
+        {
+            *encontro_mina = 1;
+        }
+        else
+        {
+            /* caso no-mina */
+            if (celda->minas_alrededor > 0u)
+            {
+                celda->estado = CELDA_REVELADA; /* número > 0: se revela esta */
+            }
+            else
+            {
+                /* número == 0: flood-fill con LIFO de pila de pendientes */
+                typedef struct { size_t fila; size_t columna; } posicion_t;
+                posicion_t *pendientes = NULL;
+                size_t capacidad = 0;
+                size_t cantidad = 0;
+
+                /* revelar origen y apilar/desapilar si corresponde */
+                celda->estado = CELDA_REVELADA;
+
+                if (ok == 1)
+                {
+                    if (cantidad == capacidad)
+                    {
+                        size_t nueva;
+                        if (capacidad == 0u)
+                        {
+                            nueva = 64u;
+                        }
+                        else
+                        {
+                            nueva = capacidad * 2u;
+                        }
+
+                        posicion_t *tmp = (posicion_t *)realloc(pendientes, nueva * sizeof(*pendientes));
+                        if (tmp == NULL)
+                        {
+                            ok = 0;
+                        }
+                        else
+                        {
+                            pendientes = tmp;
+                            capacidad = nueva;
+                        }
+                    }
+                    if (ok == 1)
+                    {
+                        pendientes[cantidad].fila = fila;
+                        pendientes[cantidad].columna = columna;
+                        cantidad = cantidad + 1u;
+                    }
+                }
+
+                /* offsets de los 8 vecinos */
+                if (ok == 1)
+                {
+                    int desplazamiento_fila[8]    = {-1,-1,-1, 0,0, 1,1,1};
+                    int desplazamiento_columna[8] = {-1, 0, 1,-1,1,-1,0,1};
+
+                    /* expandir mientras haya pila de pendientes y no haya fallo de memoria */
+                    while (ok == 1 && cantidad > 0u)
+                    {
+                        /* (LIFO) */
+                        cantidad = cantidad - 1u;
+                        size_t f_actual = pendientes[cantidad].fila;
+                        size_t c_actual = pendientes[cantidad].columna;
+
+                        /* revisar 8 vecinos del actual */
+                        {
+                            int indice_vecino = 0;
+                            while (indice_vecino < 8)
+                            {
+                                int f_vec = (int)f_actual + desplazamiento_fila[indice_vecino];
+                                int c_vec = (int)c_actual + desplazamiento_columna[indice_vecino];
+
+                                if (f_vec >= 0 && c_vec >= 0 &&
+                                    f_vec < (int)tablero->filas &&
+                                    c_vec < (int)tablero->columnas)
+                                {
+                                    size_t fi = (size_t)f_vec;
+                                    size_t ci = (size_t)c_vec;
+                                    celda_t *v = &tablero->grilla[fi][ci];
+
+                                    /* solo toco celdas ocultas y no-mina; banderas se respetan */
+                                    if (v->estado == CELDA_OCULTA && v->es_mina == false)
+                                    {
+                                        v->estado = CELDA_REVELADA;
+
+                                        /* si también es 0, la agrego para seguir expandiendo */
+                                        if (v->minas_alrededor == 0u)
+                                        {
+                                            if (ok == 1)
+                                            {
+                                                if (cantidad == capacidad)
+                                                {
+                                                    size_t nueva;
+                                                    if (capacidad == 0u)
+                                                    {
+                                                        nueva = 64u;
+                                                    }
+                                                    else
+                                                    {
+                                                        nueva = capacidad * 2u;
+                                                    }
+
+                                                    posicion_t *tmp = (posicion_t *)realloc(pendientes, nueva * sizeof(*pendientes));
+                                                    if (tmp == NULL)
+                                                    {
+                                                        ok = 0; /* sin memoria para seguir expandiendo */
+                                                    }
+                                                    else
+                                                    {
+                                                        pendientes = tmp;
+                                                        capacidad = nueva;
+                                                    }
+                                                }
+                                                if (ok == 1)
+                                                {
+                                                    pendientes[cantidad].fila = fi;
+                                                    pendientes[cantidad].columna = ci;
+                                                    cantidad = cantidad + 1u;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                indice_vecino = indice_vecino + 1;
+                            }
+                        }
+                    }
+                }
+
+                /* limpieza local del vector dinámico */
+                if (pendientes != NULL)
+                {
+                    free(pendientes);
+                    pendientes = NULL;
+                }
+            }
+        }
+    }
+
+    return ok;
+}

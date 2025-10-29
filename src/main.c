@@ -112,16 +112,39 @@ int main(void)
 
             if (ok_entrada == 1)
             {
-                const char *accion_txt = "REVELAR";
-                if (accion == ACCION_BANDERA) { accion_txt = "BANDERA"; }
-                else if (accion == ACCION_HINT) { accion_txt = "HINT"; }
-                else if (accion == ACCION_SALIR) { accion_txt = "SALIR"; }
-
-                printf("OK: %s (%zu, %zu)\n", accion_txt, fila, columna);
+                /* Solo ACCION_REVELAR, falta implementar el resto de acciones */
+                if (accion == ACCION_REVELAR)
+                {
+                    int encontro_mina = 0;
+                    if (tablero_revelar(tablero, fila, columna, &encontro_mina) == 1)
+                    {
+                        if (encontro_mina == 1)
+                        {
+                            puts("Pisaste una mina");
+                        }
+                        render_imprimir(tablero);
+                    }
+                    else
+                    {
+                        puts("No se pudo revelar");
+                    }
+                }
+                else if (accion == ACCION_BANDERA)
+                {
+                    puts("BANDERA: sin implementar");
+                }
+                else if (accion == ACCION_HINT)
+                {
+                    puts("HINT: sin implementar");
+                }
+                else
+                {
+                    puts("SALIR");
+                }
             }
             else
             {
-                printf("Entrada inválida.\n");
+                puts("Entrada inválida.");
             }
         }
     }
