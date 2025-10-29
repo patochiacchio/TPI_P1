@@ -124,6 +124,17 @@ int main(void)
                         {
                             puts("Pisaste una mina"); /* mejorar esto */
                         }
+                        // /* Prueba estados */
+                        // estado_juego_t estado = tablero_estado(tablero, encontro_mina);
+                        // if (estado == JUEGO_GANADO)
+                        // {
+                        //     puts("¡Ganaste!");
+                        // }
+                        // else if (estado == JUEGO_PERDIDO)
+                        // {
+                        //     puts("Perdiste");
+                        // }
+
                         render_imprimir(tablero);
                     }
                     else

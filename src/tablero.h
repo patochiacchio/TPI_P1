@@ -36,6 +36,16 @@ typedef struct
 } tablero_t;
 
 /**
+ * Estado general de la partida.
+ */
+typedef enum
+{
+    JUEGO_EN_CURSO = 0,
+    JUEGO_GANADO   = 1,
+    JUEGO_PERDIDO  = 2
+} estado_juego_t;
+
+/**
  * Crea un tablero vacío
  * Reserva memoria y deja todas las celdas ocultas, sin minas y con contador 0.
  * 
@@ -122,5 +132,19 @@ int tablero_revelar(tablero_t *tablero, size_t fila, size_t columna, int *encont
  * @post Solo afecta celdas no reveladas.
  */
 int tablero_alternar_bandera(tablero_t *tablero, size_t fila, size_t columna);
+
+/**
+ * Evalúa el estado del juego.
+ * - Si encontro_mina == 1 -> JUEGO_PERDIDO.
+ * - Si todas las celdas NO mina están reveladas -> JUEGO_GANADO.
+ * - En cualquier otro caso -> JUEGO_EN_CURSO.
+ *
+ * @param tablero Puntero al tablero (solo lectura).
+ * @param encontro_mina 1 si la última jugada destapó una mina, 0 si no.
+ * @pre tablero != NULL.
+ * @returns Estado de la partida.
+ * @post No modifica el tablero.
+ */
+estado_juego_t tablero_estado(const tablero_t *tablero, int encontro_mina);
 
 #endif

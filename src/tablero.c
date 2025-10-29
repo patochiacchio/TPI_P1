@@ -493,3 +493,53 @@ int tablero_alternar_bandera(tablero_t *tablero, size_t fila, size_t columna)
 
     return ok;
 }
+
+estado_juego_t tablero_estado(const tablero_t *tablero, int encontro_mina)
+{
+    estado_juego_t estado = JUEGO_EN_CURSO;
+
+    if (tablero == NULL)
+    {
+        estado = JUEGO_PERDIDO;
+    }
+    else if (encontro_mina == 1)
+    {
+        estado = JUEGO_PERDIDO;
+    }
+    else
+    {
+        size_t fila = 0;
+        size_t columna = 0;
+        int queda_oculta_no_mina = 0;
+
+        /* si se ecnuentra alguna celda NO mina sin revelar, sigue en curso */
+        while (fila < tablero->filas && queda_oculta_no_mina == 0)
+        {
+            columna = 0;
+            while (columna < tablero->columnas && queda_oculta_no_mina == 0)
+            {
+                const celda_t *c = &tablero->grilla[fila][columna];
+                if (c->es_mina == false && c->estado != CELDA_REVELADA)
+                {
+                    queda_oculta_no_mina = 1;
+                }
+                columna = columna + 1;
+            }
+            if (queda_oculta_no_mina == 0)
+            {
+                fila = fila + 1;
+            }
+        }
+
+        if (queda_oculta_no_mina == 0)
+        {
+            estado = JUEGO_GANADO;
+        }
+        else
+        {
+            estado = JUEGO_EN_CURSO;
+        }
+    }
+
+    return estado;
+}
