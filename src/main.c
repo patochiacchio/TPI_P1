@@ -103,69 +103,93 @@ int main(void)
     /* Entrada de datos con validación de jugada */
     if (rv == EXIT_SUCCESS)
     {
-        puts("Ingrese jugada (R/B/H/S) fila columna, ej: R 3 4");
+        estado_juego_t estado = JUEGO_EN_CURSO;
+        int salir = 0;
+
+        while (salir == 0 && estado == JUEGO_EN_CURSO)
         {
-            accion_t accion = ACCION_REVELAR;
-            size_t fila = 0;
-            size_t columna = 0;
-            int ok_entrada = 0;
-
-            ok_entrada = entrada_leer_jugada(&accion, &fila, &columna, tablero->filas, tablero->columnas);
-
-            if (ok_entrada == 1)
+            puts("Ingrese jugada (R/B/H/S) fila columna, ej: R 3 4");
             {
-                /* Acciones de jugadas (R/B/H/S) */
-                if (accion == ACCION_REVELAR)
-                {
-                    int encontro_mina = 0;
-                    if (tablero_revelar(tablero, fila, columna, &encontro_mina) == 1)
-                    {
-                        if (encontro_mina == 1)
-                        {
-                            puts("Pisaste una mina"); /* mejorar esto */
-                        }
-                        // /* Prueba estados */
-                        // estado_juego_t estado = tablero_estado(tablero, encontro_mina);
-                        // if (estado == JUEGO_GANADO)
-                        // {
-                        //     puts("¡Ganaste!");
-                        // }
-                        // else if (estado == JUEGO_PERDIDO)
-                        // {
-                        //     puts("Perdiste");
-                        // }
+                accion_t accion = ACCION_REVELAR;
+                size_t fila = 0;
+                size_t columna = 0;
+                int ok_entrada = 0;
 
-                        render_imprimir(tablero);
+                ok_entrada = entrada_leer_jugada(&accion, &fila, &columna, tablero->filas, tablero->columnas);
+
+                if (ok_entrada == 1)
+                {
+                    /* Acciones de jugadas (R/B/H/S) */
+                    if (accion == ACCION_REVELAR)
+                    {
+                        int encontro_mina = 0;
+                        if (tablero_revelar(tablero, fila, columna, &encontro_mina) == 1)
+                        {
+                            estado = tablero_estado(tablero, encontro_mina);
+                            if (encontro_mina == 1)
+                            {
+                                puts("Pisaste una mina"); /* mejorar esto */
+                            }
+                            // /* Prueba estados */
+
+                            // estado_juego_t estado = tablero_estado(tablero, encontro_mina);
+                            // if (estado == JUEGO_GANADO)
+                            // {
+                            //     puts("¡Ganaste!");
+                            // }
+                            // else if (estado == JUEGO_PERDIDO)
+                            // {
+                            //     puts("Perdiste");
+                            // }
+
+                            render_imprimir(tablero);
+                        }
+                        else
+                        {
+                            puts("No se pudo revelar");
+                        }
+                    }
+                    else if (accion == ACCION_BANDERA)
+                    {
+                        if (tablero_alternar_bandera(tablero, fila, columna) == 1)
+                        {
+                            render_imprimir(tablero);
+                        }
+                        else
+                        {
+                            puts("No se pudo alternar bandera");
+                        }
+                    }
+                    else if (accion == ACCION_HINT)
+                    {
+                        puts("HINT: sin implementar");
                     }
                     else
                     {
-                        puts("No se pudo revelar");
+                        puts("SALIR");
                     }
-                }
-                else if (accion == ACCION_BANDERA)
-                {
-                    if (tablero_alternar_bandera(tablero, fila, columna) == 1)
-                    {
-                        render_imprimir(tablero);
-                    }
-                    else
-                    {
-                        puts("No se pudo alternar bandera");
-                    }
-                }
-                else if (accion == ACCION_HINT)
-                {
-                    puts("HINT: sin implementar");
                 }
                 else
                 {
-                    puts("SALIR");
+                    puts("Entrada inválida.");
                 }
             }
-            else
-            {
-                puts("Entrada inválida.");
-            }
+        }
+
+        /* Mensaje al final/salida del juego */
+        if (salir == 1)
+        {
+            puts("Saliste del juego.");
+        }
+        else if (estado == JUEGO_GANADO)
+        {
+            render_imprimir(tablero);
+            puts("Ganaste!");
+        }
+        else if (estado == JUEGO_PERDIDO)
+        {
+            render_imprimir(tablero);
+            puts("Perdiste.");
         }
     }
 
