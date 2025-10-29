@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "tablero.h"
 #include "render.h"
 #include "entrada.h"
@@ -22,11 +23,12 @@ int main(void)
         rv = EXIT_FAILURE;
     }
 
-    /* se colocan minas con semilla fija para debug */
+    /* se colocan minas con semilla VARIABLE para minas aleatorias (CON DEBUG) */
     if (rv == EXIT_SUCCESS)
     {
-        int ok_minas = tablero_colocar_minas(tablero, 1234u);
-        if (ok_minas == 0)
+        unsigned int semilla = (unsigned int)time(NULL) ^ (unsigned int)clock();
+        printf("Semilla usada: %u\n", semilla);  // debug
+        if (tablero_colocar_minas(tablero, semilla) == 0)
         {
             fprintf(stderr, "Error: no se pudieron colocar las minas.\n");
             rv = EXIT_FAILURE;
