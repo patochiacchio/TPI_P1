@@ -4,6 +4,7 @@
 #include "tablero.h"
 #include "render.h"
 #include "entrada.h"
+#include "archivos.h"
 
 /**
  * Crea un tablero vacío 9x9 con 10 minas
@@ -17,10 +18,29 @@ int main(void)
     // /* Reserva e inicializa la estructura base */
     // tablero = tablero_crear(9, 9, 10);
     
+    /* Intentar cargar partida guardada (opcional) */
+    puts("Desea cargar una partida guardada? (s/n)");
+    char opcion_cargar = (char)getchar();
+    while (getchar() != '\n'); /* limpia buffer */
+
+    if (opcion_cargar == 's' || opcion_cargar == 'S')
+    {
+        tablero = archivos_cargar_partida("partida_guardada.txt");
+        if (tablero != NULL)
+        {
+            puts("Partida cargada correctamente.");
+            render_imprimir(tablero);
+        }
+        else
+        {
+            puts("No se pudo cargar la partida. Se creará una nueva.");
+        }
+    }
+
     /* Configuración dinámica (filas columnas minas) */
-    size_t filas = 9u;
-    size_t columnas = 9u;
-    size_t minas = 10u;
+    size_t filas = 0u;
+    size_t columnas = 0u;
+    size_t minas = 0u;
     int configurado = 0;
 
     puts("Configurar tablero (filas columnas minas). Ej: 9 9 10");
@@ -38,7 +58,11 @@ int main(void)
     }
 
     /* crear tablero con los valores ingresados */
-    tablero = tablero_crear(filas, columnas, minas);
+    if (tablero == NULL)
+    {
+        tablero = tablero_crear(filas, columnas, minas);
+    }
+
     if (tablero == NULL)
     {
         fprintf(stderr, "Error: sin memoria para tablero.\n");
@@ -188,9 +212,23 @@ int main(void)
                     {
                         puts("HINT: sin implementar");
                     }
-                    else
+                    else if (accion == ACCION_SALIR)
                     {
-                        puts("SALIR");
+                        puts("Desea guardar la partida? (s/n)");
+                        char respuesta = (char)getchar();
+                        while (getchar() != '\n'); /* limpia buffer */
+                        if (respuesta == 's' || respuesta == 'S')
+                        {
+                            if (archivos_guardar_partida(tablero, "partida_guardada.txt") == 1)
+                            {
+                                puts("Partida guardada con éxito.");
+                            }
+                            else
+                            {
+                                puts("Error al guardar la partida.");
+                            }
+                        }
+                        salir = 1;
                     }
                 }
                 else
