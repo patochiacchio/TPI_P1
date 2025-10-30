@@ -324,7 +324,12 @@ int tablero_revelar(tablero_t *tablero, size_t fila, size_t columna, int *encont
             else
             {
                 /* número == 0: flood-fill con LIFO de pila de pendientes */
-                typedef struct { size_t fila; size_t columna; } posicion_t;
+                typedef struct
+                {
+                    size_t fila;
+                    size_t columna;
+                } posicion_t;
+                
                 posicion_t *pendientes = NULL;
                 size_t capacidad = 0;
                 size_t cantidad = 0;
