@@ -73,63 +73,70 @@ int entrada_leer_jugada(accion_t *accion, size_t *fila, size_t *columna, size_t 
         }
     }
 
-    /* fila */
-    if (ok == 1)
+    if(*accion != ACCION_SALIR)
     {
-        while (*p != '\0' && isspace((unsigned char)*p) != 0)
+        /* fila */
+        if (ok == 1)
         {
-            p = p + 1;
-        }
-        if (*p == '\0')
-        {
-            ok = 0;
-        }
-        else
-        {
-            fila_tmp = strtol(p, &endptr, 10);
-            if (endptr == p || fila_tmp < 0 || (long)max_filas <= fila_tmp)
+            while (*p != '\0' && isspace((unsigned char)*p) != 0)
+            {
+                p = p + 1;
+            }
+            if (*p == '\0')
             {
                 ok = 0;
             }
             else
             {
-                p = endptr;
+                fila_tmp = strtol(p, &endptr, 10);
+                if (endptr == p || fila_tmp < 0 || (long)max_filas <= fila_tmp)
+                {
+                    ok = 0;
+                }
+                else
+                {
+                    p = endptr;
+                }
             }
         }
-    }
 
-    /* columna */
-    if (ok == 1)
-    {
-        while (*p != '\0' && isspace((unsigned char)*p) != 0)
+        /* columna */
+        if (ok == 1)
         {
-            p = p + 1;
-        }
-        if (*p == '\0')
-        {
-            ok = 0;
-        }
-        else
-        {
-            columna_tmp = strtol(p, &endptr, 10);
-            if (endptr == p || columna_tmp < 0 || (long)max_columnas <= columna_tmp)
+            while (*p != '\0' && isspace((unsigned char)*p) != 0)
+            {
+                p = p + 1;
+            }
+            if (*p == '\0')
             {
                 ok = 0;
             }
             else
             {
-                p = endptr;
+                columna_tmp = strtol(p, &endptr, 10);
+                if (endptr == p || columna_tmp < 0 || (long)max_columnas <= columna_tmp)
+                {
+                    ok = 0;
+                }
+                else
+                {
+                    p = endptr;
+                }
             }
         }
-    }
 
-    /* si todo OK, asigno los out-params */
-    if (ok == 1)
+        /* si todo OK, asigno los out-params */
+        if (ok == 1)
+        {
+            *fila = (size_t)fila_tmp;
+            *columna = (size_t)columna_tmp;
+        }
+                
+    }
+    else
     {
-        *fila = (size_t)fila_tmp;
-        *columna = (size_t)columna_tmp;
+        /* NADA */
     }
-
     return ok;
 }
 
