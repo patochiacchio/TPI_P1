@@ -40,11 +40,19 @@ int archivos_guardar_partida(const tablero_t *tablero, const char *nombre_archiv
             {
                 const celda_t *celda = &tablero->grilla[fila][columna];
 
-                /* es_mina (0/1), minas_alrededor (0–8), estado (0/1/2) */
-                if (fprintf(archivo_salida, "%d %d %d\n",
-                            celda->es_mina ? 1 : 0,
-                            celda->minas_alrededor,
-                            celda->estado) < 0)
+                /* valor_mina 1/0 para evitar usar el '?' */
+                int valor_mina = 0;
+
+                if (celda->es_mina)
+                {
+                    valor_mina = 1;
+                }
+                else
+                {
+                    valor_mina = 0;
+                }
+                /*  valor_mina, minas_alrededor (0–8), estado (0/1/2) */
+                if (fprintf(archivo_salida, "%d %d %d\n", valor_mina, celda->minas_alrededor, celda->estado) < 0)
                 {
                     ok = 0;
                 }
