@@ -36,118 +36,120 @@ int main(void)
             puts("No se pudo cargar la partida. Se creará una nueva.");
         }
     }
-
-    /* Configuración dinámica (filas columnas minas) */
-    size_t filas = 0u;
-    size_t columnas = 0u;
-    size_t minas = 0u;
-    int configurado = 0;
-
-    puts("Configurar tablero (filas columnas minas). Ej: 9 9 10");
-    while (configurado == 0)
+    else
     {
-        int lectura_ok = entrada_leer_configuracion(&filas, &columnas, &minas);
-        if (lectura_ok == 1)
+        /* Configuración dinámica (filas columnas minas) */
+        size_t filas = 0u;
+        size_t columnas = 0u;
+        size_t minas = 0u;
+        int configurado = 0;
+
+        puts("Configurar tablero (filas columnas minas). Ej: 9 9 10");
+        while (configurado == 0)
         {
-            configurado = 1;
+            int lectura_ok = entrada_leer_configuracion(&filas, &columnas, &minas);
+            if (lectura_ok == 1)
+            {
+                configurado = 1;
+            }
+            else
+            {
+                puts("Valores inválidos. Intente de nuevo (filas columnas minas):");
+            }
         }
-        else
+
+        /* crear tablero con los valores ingresados */
+        if (tablero == NULL)
         {
-            puts("Valores inválidos. Intente de nuevo (filas columnas minas):");
+            tablero = tablero_crear(filas, columnas, minas);
         }
-    }
 
-    /* crear tablero con los valores ingresados */
-    if (tablero == NULL)
-    {
-        tablero = tablero_crear(filas, columnas, minas);
-    }
-
-    if (tablero == NULL)
-    {
-        fprintf(stderr, "Error: sin memoria para tablero.\n");
-        rv = EXIT_FAILURE;
-    }
-
-    /* se colocan minas con semilla VARIABLE para minas aleatorias (CON DEBUG) */
-    if (rv == EXIT_SUCCESS)
-    {
-        unsigned int semilla = (unsigned int)time(NULL) ^ (unsigned int)clock();
-        
-        // printf("Semilla usada: %u\n", semilla);  // debug
-        
-        if (tablero_colocar_minas(tablero, semilla) == 0)
+        if (tablero == NULL)
         {
-            fprintf(stderr, "Error: no se pudieron colocar las minas.\n");
+            fprintf(stderr, "Error: sin memoria para tablero.\n");
             rv = EXIT_FAILURE;
         }
-    }
 
-    // /* conteo rápido para chequear que la cantidad coincide */
-    // if (rv == EXIT_SUCCESS)
-    // {
-    //     size_t fila = 0;
-    //     size_t columna = 0;
-    //     size_t minas_colocadas = 0;
-
-    //     while (fila < tablero->filas)
-    //     {
-    //         columna = 0;
-    //         while (columna < tablero->columnas)
-    //         {
-    //             if (tablero->grilla[fila][columna].es_mina == true)
-    //             {
-    //                 minas_colocadas = minas_colocadas + 1;
-    //             }
-    //             columna = columna + 1;
-    //         }
-    //         fila = fila + 1;
-    //     }
-
-    //     fprintf(stdout, "Minas colocadas: %zu\n", minas_colocadas);
-    // }
-
-    /* se cuentan los vecinos (0..8) en celdas no-mina */
-    if (rv == EXIT_SUCCESS)
-    {
-        int ok_vecinos = tablero_contar_vecinos(tablero);
-        if (ok_vecinos == 0)
+        /* se colocan minas con semilla VARIABLE para minas aleatorias (CON DEBUG) */
+        if (rv == EXIT_SUCCESS)
         {
-            fprintf(stderr, "Error: no se pudieron contar los vecinos.\n");
-            rv = EXIT_FAILURE;
+            unsigned int semilla = (unsigned int)time(NULL) ^ (unsigned int)clock();
+            
+            // printf("Semilla usada: %u\n", semilla);  // debug
+            
+            if (tablero_colocar_minas(tablero, semilla) == 0)
+            {
+                fprintf(stderr, "Error: no se pudieron colocar las minas.\n");
+                rv = EXIT_FAILURE;
+            }
+        }
+
+        // /* conteo rápido para chequear que la cantidad coincide */
+        // if (rv == EXIT_SUCCESS)
+        // {
+        //     size_t fila = 0;
+        //     size_t columna = 0;
+        //     size_t minas_colocadas = 0;
+
+        //     while (fila < tablero->filas)
+        //     {
+        //         columna = 0;
+        //         while (columna < tablero->columnas)
+        //         {
+        //             if (tablero->grilla[fila][columna].es_mina == true)
+        //             {
+        //                 minas_colocadas = minas_colocadas + 1;
+        //             }
+        //             columna = columna + 1;
+        //         }
+        //         fila = fila + 1;
+        //     }
+
+        //     fprintf(stdout, "Minas colocadas: %zu\n", minas_colocadas);
+        // }
+
+        /* se cuentan los vecinos (0..8) en celdas no-mina */
+        if (rv == EXIT_SUCCESS)
+        {
+            int ok_vecinos = tablero_contar_vecinos(tablero);
+            if (ok_vecinos == 0)
+            {
+                fprintf(stderr, "Error: no se pudieron contar los vecinos.\n");
+                rv = EXIT_FAILURE;
+            }
+        }
+
+        // /* TEST para revelar hasta 3 celdas no-mina para ver números (temporal) */
+        // if (rv == EXIT_SUCCESS)
+        // {
+        //     size_t fila = 0;
+        //     size_t columna = 0;
+        //     size_t mostradas = 0;
+
+        //     while (fila < tablero->filas && mostradas < 3)
+        //     {
+        //         columna = 0;
+        //         while (columna < tablero->columnas && mostradas < 3)
+        //         {
+        //             if (tablero->grilla[fila][columna].es_mina == false)
+        //             {
+        //                 tablero->grilla[fila][columna].estado = CELDA_REVELADA;
+        //                 mostradas = mostradas + 1;
+        //             }
+        //             columna = columna + 1;
+        //         }
+        //         fila = fila + 1;
+        //     }
+        // }
+
+        /* Render mínimo: índices + celdas ocultas con '.' */
+        if (rv == EXIT_SUCCESS)
+        {
+            puts("========== Buscaminas ==========");
+            render_imprimir(tablero);
         }
     }
-
-    // /* TEST para revelar hasta 3 celdas no-mina para ver números (temporal) */
-    // if (rv == EXIT_SUCCESS)
-    // {
-    //     size_t fila = 0;
-    //     size_t columna = 0;
-    //     size_t mostradas = 0;
-
-    //     while (fila < tablero->filas && mostradas < 3)
-    //     {
-    //         columna = 0;
-    //         while (columna < tablero->columnas && mostradas < 3)
-    //         {
-    //             if (tablero->grilla[fila][columna].es_mina == false)
-    //             {
-    //                 tablero->grilla[fila][columna].estado = CELDA_REVELADA;
-    //                 mostradas = mostradas + 1;
-    //             }
-    //             columna = columna + 1;
-    //         }
-    //         fila = fila + 1;
-    //     }
-    // }
-
-    /* Render mínimo: índices + celdas ocultas con '.' */
-    if (rv == EXIT_SUCCESS)
-    {
-        puts("========== Buscaminas ==========");
-        render_imprimir(tablero);
-    }
-
+    
     /* Entrada de datos con validación de jugada */
     if (rv == EXIT_SUCCESS)
     {
