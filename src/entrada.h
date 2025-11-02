@@ -11,7 +11,7 @@ typedef enum
     ACCION_REVELAR = 0,  /* 'R' */
     ACCION_BANDERA = 1,  /* 'B' */
     ACCION_HINT    = 2,  /* 'H' */
-    ACCION_SALIR   = 3   /* 'S' */ /* para salir de manera "prolija" */
+    ACCION_SALIR   = 3   /* 'S' */
 } accion_t;
 
 /**

@@ -44,7 +44,17 @@ int main(void)
         size_t minas = 0u;
         int configurado = 0;
 
-        puts("Configurar tablero (filas columnas minas). Ej: 9 9 10");
+        puts("====== CONFIGURAR TABLERO ======");
+        puts("Mínimo de filas y columnas: 5");
+        puts("Máximo de filas y columnas: 30");
+        puts("== CONFIGURACIONES RECOMENDADAS ==");
+        puts("Principiante: 8 8 10");
+        puts("Intermedio: 16 16 40");
+        puts("Experto: 30 16 99");
+        puts("Introduzca las dimensiones del tablero (filas columnas minas). Ej: 9 9 10");
+
+
+
         while (configurado == 0)
         {
             int lectura_ok = entrada_leer_configuracion(&filas, &columnas, &minas);
@@ -191,7 +201,6 @@ int main(void)
                             // {
                             //     puts("Perdiste");
                             // }
-
                             render_imprimir(tablero);
                         }
                         else
@@ -235,7 +244,7 @@ int main(void)
                 }
                 else
                 {
-                    puts("Entrada inválida.");
+                    puts("Entrada invalida.");
                 }
             }
         }
@@ -253,7 +262,6 @@ int main(void)
         }
         else if (estado == JUEGO_PERDIDO)
         {
-            render_imprimir(tablero);
             puts("Perdiste.");
         }
     }
