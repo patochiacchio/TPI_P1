@@ -1,4 +1,4 @@
-#include <stdio.h>   // printf
+#include <stdio.h>
 #include "render.h"
 
 /* Render mínimo: solo muestra el estado visible de cada celda.
@@ -42,17 +42,22 @@ void render_imprimir(const tablero_t *tablero)
         c = 0;
         while (c < tablero->columnas)
         {
-            char ch = '.'; /* Oculto */
             if (tablero->grilla[f][c].estado == CELDA_BANDERA)
             {
-                ch = 'F';
+                /* Imprimimos el emoji "Bandera" como un STRING (%s) */
+                printf(" %s", "🚩");
             }
             else if (tablero->grilla[f][c].estado == CELDA_REVELADA)
             {
+                /* Calculamos el número */
                 unsigned char n = tablero->grilla[f][c].minas_alrededor;
-                ch = (char)('0' + n); /* Revela número */
+                char ch_num = (char)('0' + n);
+                printf(" %c ", ch_num);
             }
-            printf(" %c ", ch);
+            else /* Caso por defecto: CELDA_OCULTA */
+            {
+                printf(" %s ", "☺"); 
+            }            
             c = c + 1;
         }
         printf("\n");
