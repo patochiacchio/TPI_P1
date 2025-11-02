@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <windows.h>
 #include "tablero.h"
 #include "render.h"
 #include "entrada.h"
@@ -12,6 +13,7 @@
  */
 int main(void)
 {
+    SetConsoleOutputCP(CP_UTF8);
     int rv = EXIT_SUCCESS;
     tablero_t *tablero = NULL;
 
