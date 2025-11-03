@@ -152,8 +152,8 @@ void render_partida_terminada(const tablero_t *tablero, estado_juego_t estado)
         puts("⠀⠀⣰⣾⠟⠉⣿⡜⣿⡆⣴⡿⠁⣼⡿⠛⢃⣾⡿⠋⢻⣇⠀⠀");
         puts("⠀⠐⣿⡁⢀⣠⣿⡇⢹⣿⡿⠁⢠⣿⠷⠟⠻⠟⠀⠀⠈⠛⠀⠀");
         puts("⠀⠀⠙⠻⠿⠟⠋⠀⠀⠙⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
-        puts("               ¡GANASTE!           ");
-        puts("====================================");
+        puts("        ¡GANASTE!      ");
+        puts("==========================");
 
         
     }
@@ -172,8 +172,8 @@ void render_partida_terminada(const tablero_t *tablero, estado_juego_t estado)
         puts("⠀⠀⣰⣾⠟⠉⣿⡜⣿⡆⣴⡿⠁⣼⡿⠛⢃⣾⡿⠋⢻⣇⠀⠀");
         puts("⠀⠐⣿⡁⢀⣠⣿⡇⢹⣿⡿⠁⢠⣿⠷⠟⠻⠟⠀⠀⠈⠛⠀⠀");
         puts("⠀⠀⠙⠻⠿⠟⠋⠀⠀⠙⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
-        puts("               ¡PERDISTE!           ");
-        puts("====================================");
+        puts("        ¡PERDISTE!      ");
+        puts("==========================");
 
     }
 }
