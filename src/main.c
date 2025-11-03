@@ -46,16 +46,15 @@ int main(void)
         size_t minas = 0u;
         int configurado = 0;
 
+        puts("========== BUSCAMINAS ==========");        
         puts("====== CONFIGURAR TABLERO ======");
         puts("Mínimo de filas y columnas: 5");
         puts("Máximo de filas y columnas: 30");
         puts("== CONFIGURACIONES RECOMENDADAS ==");
-        puts("Principiante: 8 8 10");
-        puts("Intermedio: 16 16 40");
-        puts("Experto: 30 16 99");
+        puts("Principiante -->  8  8 10");
+        puts("Intermedio   --> 16 16 40");
+        puts("Avanzado     --> 30 21 99");
         puts("Introduzca las dimensiones del tablero (filas columnas minas). Ej: 9 9 10");
-
-
 
         while (configurado == 0)
         {
@@ -82,7 +81,7 @@ int main(void)
             rv = EXIT_FAILURE;
         }
 
-        /* se colocan minas con semilla VARIABLE para minas aleatorias (CON DEBUG) */
+        /* se colocan minas con semilla VARIABLE para minas aleatorias */
         if (rv == EXIT_SUCCESS)
         {
             unsigned int semilla = (unsigned int)time(NULL) ^ (unsigned int)clock();
@@ -188,9 +187,9 @@ int main(void)
                         if (tablero_revelar(tablero, fila, columna, &encontro_mina) == 1)
                         {
                             estado = tablero_estado(tablero, encontro_mina);
-                            if (encontro_mina == 1)
+                            if (encontro_mina == 0)
                             {
-                                puts("Pisaste una mina"); /* mejorar esto */
+                                render_imprimir(tablero);
                             }
                             // /* Prueba estados */
 
@@ -203,7 +202,6 @@ int main(void)
                             // {
                             //     puts("Perdiste");
                             // }
-                            render_imprimir(tablero);
                         }
                         else
                         {
@@ -256,15 +254,9 @@ int main(void)
         {
             puts("Saliste del juego.");
         }
-        /* agregar alguna animacion o algo copado con sleep() */
-        else if (estado == JUEGO_GANADO)
+        else if (estado == JUEGO_GANADO || estado == JUEGO_PERDIDO)
         {
-            render_imprimir(tablero);
-            puts("Ganaste!");
-        }
-        else if (estado == JUEGO_PERDIDO)
-        {
-            puts("Perdiste.");
+            render_partida_terminada(tablero, estado);
         }
     }
 
