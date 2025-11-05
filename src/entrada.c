@@ -73,7 +73,7 @@ int entrada_leer_jugada(accion_t *accion, size_t *fila, size_t *columna, size_t 
         }
     }
 
-    if(*accion != ACCION_SALIR)
+    if(*accion != ACCION_SALIR && *accion != ACCION_HINT)
     {
         /* fila */
         if (ok == 1)

@@ -5,8 +5,8 @@
 
 /**
  * Imprime el tablero en ASCII.
- * - Celdas ocultas: '.'
- * - Banderas:       'F'
+ * - Celdas ocultas: '☺'
+ * - Banderas:       '🚩'
  * - Reveladas:      dígito 0..8 (por ahora no revelamos nada en esta etapa)
  *
  * @param tablero puntero válido.

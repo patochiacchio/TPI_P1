@@ -48,6 +48,8 @@ buscaminas/
   │   ├─ render.h
   │   ├─ render.c
   │   ├─ entrada.h
-  │   └─ entrada.c
+  │   ├─ entrada.c
+  │   ├─ archivos.h
+  │   └─ archivos.c
   └─ Makefile (VER)
 ```

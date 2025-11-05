@@ -40,7 +40,6 @@ int archivos_guardar_partida(const tablero_t *tablero, const char *nombre_archiv
             {
                 const celda_t *celda = &tablero->grilla[fila][columna];
 
-                /* valor_mina 1/0 para evitar usar el '?' */
                 int valor_mina = 0;
 
                 if (celda->es_mina)
