@@ -16,6 +16,7 @@ tablero_t *tablero_crear(size_t filas, size_t columnas, size_t cantidad_minas)
 
     /* Reserva del struct principal */
     tablero = (tablero_t *)calloc(1, sizeof(*tablero));
+    
     if (tablero == NULL)
     {
         ok = 0;
@@ -547,4 +548,83 @@ estado_juego_t tablero_estado(const tablero_t *tablero, int encontro_mina)
     }
 
     return estado;
+}
+
+int tablero_hint_seguro(const tablero_t *tablero, size_t *fila_hint, size_t *columna_hint)
+{
+    int hint_encontrado = 0;
+    size_t f = 0;
+
+    if (tablero == NULL || fila_hint == NULL || columna_hint == NULL)
+    {
+        hint_encontrado = 0;
+    }
+    else
+    {
+        f = 0;
+        /* Usamos 'hint_encontrado' como bandera para el bucle */
+        while (f < tablero->filas && hint_encontrado == 0)
+        {
+            size_t c = 0;
+            while (c < tablero->columnas && hint_encontrado == 0)
+            {
+                const celda_t *celda_actual = &tablero->grilla[f][c];
+
+                /* buscar celda revelada con minas alrededor */
+                if (celda_actual->estado == CELDA_REVELADA && celda_actual->minas_alrededor > 0)
+                {
+                    unsigned char num_minas_celda = celda_actual->minas_alrededor;
+                    size_t conteo_banderas = 0;
+                    size_t conteo_ocultas = 0;
+                    size_t f_hint_candidata = 0;
+                    size_t c_hint_candidata = 0;
+
+                    int df[8] = {-1, -1, -1,  0, 0,  1, 1, 1};
+                    int dc[8] = {-1,  0,  1, -1, 1, -1, 0, 1};
+                    int k = 0;
+
+                    while (k < 8)
+                    {
+                        int f_vec = (int)f + df[k];
+                        int c_vec = (int)c + dc[k];
+
+                        /* verifica que el vecino esté en rango */
+                        if (f_vec >= 0 && c_vec >= 0 && f_vec < (int)tablero->filas && c_vec < (int)tablero->columnas)
+                        {
+                            const celda_t *vecino = &tablero->grilla[(size_t)f_vec][(size_t)c_vec];
+
+                            if (vecino->estado == CELDA_BANDERA)
+                            {
+                                conteo_banderas = conteo_banderas + 1;
+                            }
+                            else if (vecino->estado == CELDA_OCULTA)
+                            {
+                                conteo_ocultas = conteo_ocultas + 1;
+                                if (conteo_ocultas == 1)
+                                {
+                                    /* guardamos la primera celda oculta como candidata */
+                                    f_hint_candidata = (size_t)f_vec;
+                                    c_hint_candidata = (size_t)c_vec;
+                                }
+                            }
+                        }
+                        k = k + 1;
+                    }
+
+                    /* lógica del "Hint" */
+                    /* Si el número de la celda es IGUAL a las banderas vecinas, y AÚN quedan celdas ocultas, esas ocultas son seguras. */
+                    if (num_minas_celda == (unsigned char)conteo_banderas && conteo_ocultas > 0)
+                    {
+                        *fila_hint = f_hint_candidata;
+                        *columna_hint = c_hint_candidata;
+                        hint_encontrado = 1;
+                    }
+                }
+                c = c + 1;
+            }
+            f = f + 1;
+        }
+    }
+
+    return hint_encontrado;
 }

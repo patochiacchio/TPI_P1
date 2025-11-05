@@ -147,4 +147,20 @@ int tablero_alternar_bandera(tablero_t *tablero, size_t fila, size_t columna);
  */
 estado_juego_t tablero_estado(const tablero_t *tablero, int encontro_mina);
 
+/**
+ * Busca una jugada "pista" (hint) segura.
+ * Busca una celda oculta que esté garantizada de NO ser una mina.
+ * La lógica se basa en celdas reveladas 'N' donde N == num_banderas_vecinas.
+ *
+ * @param tablero Puntero al tablero (solo lectura).
+ * @param fila_hint Puntero de salida para la fila de la pista.
+ * @param columna_hint Puntero de salida para la columna de la pista.
+ *
+ * @pre tablero != NULL, fila_hint != NULL, columna_hint != NULL.
+ * @returns 1 si se encontró una pista segura; 0 si no se encontró
+ * ninguna pista o en caso de error.
+ * @post Si retorna 1, fila_hint y columna_hint contienen las
+ * coordenadas de una celda oculta segura.
+ */
+int tablero_hint_seguro(const tablero_t *tablero, size_t *fila_hint, size_t *columna_hint);
 #endif

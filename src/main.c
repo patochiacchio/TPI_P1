@@ -17,9 +17,6 @@ int main(void)
     int rv = EXIT_SUCCESS;
     tablero_t *tablero = NULL;
 
-    // /* Reserva e inicializa la estructura base */
-    // tablero = tablero_crear(9, 9, 10);
-    
     /* Intentar cargar partida guardada (opcional) */
     puts("Desea cargar una partida guardada? (s/n)");
     char opcion_cargar = (char)getchar();
@@ -85,39 +82,13 @@ int main(void)
         if (rv == EXIT_SUCCESS)
         {
             unsigned int semilla = (unsigned int)time(NULL) ^ (unsigned int)clock();
-            
-            // printf("Semilla usada: %u\n", semilla);  // debug
-            
+                        
             if (tablero_colocar_minas(tablero, semilla) == 0)
             {
                 fprintf(stderr, "Error: no se pudieron colocar las minas.\n");
                 rv = EXIT_FAILURE;
             }
         }
-
-        // /* conteo rápido para chequear que la cantidad coincide */
-        // if (rv == EXIT_SUCCESS)
-        // {
-        //     size_t fila = 0;
-        //     size_t columna = 0;
-        //     size_t minas_colocadas = 0;
-
-        //     while (fila < tablero->filas)
-        //     {
-        //         columna = 0;
-        //         while (columna < tablero->columnas)
-        //         {
-        //             if (tablero->grilla[fila][columna].es_mina == true)
-        //             {
-        //                 minas_colocadas = minas_colocadas + 1;
-        //             }
-        //             columna = columna + 1;
-        //         }
-        //         fila = fila + 1;
-        //     }
-
-        //     fprintf(stdout, "Minas colocadas: %zu\n", minas_colocadas);
-        // }
 
         /* se cuentan los vecinos (0..8) en celdas no-mina */
         if (rv == EXIT_SUCCESS)
@@ -129,29 +100,6 @@ int main(void)
                 rv = EXIT_FAILURE;
             }
         }
-
-        // /* TEST para revelar hasta 3 celdas no-mina para ver números (temporal) */
-        // if (rv == EXIT_SUCCESS)
-        // {
-        //     size_t fila = 0;
-        //     size_t columna = 0;
-        //     size_t mostradas = 0;
-
-        //     while (fila < tablero->filas && mostradas < 3)
-        //     {
-        //         columna = 0;
-        //         while (columna < tablero->columnas && mostradas < 3)
-        //         {
-        //             if (tablero->grilla[fila][columna].es_mina == false)
-        //             {
-        //                 tablero->grilla[fila][columna].estado = CELDA_REVELADA;
-        //                 mostradas = mostradas + 1;
-        //             }
-        //             columna = columna + 1;
-        //         }
-        //         fila = fila + 1;
-        //     }
-        // }
 
         /* Render mínimo: índices + celdas ocultas con '.' */
         if (rv == EXIT_SUCCESS)
@@ -191,17 +139,6 @@ int main(void)
                             {
                                 render_imprimir(tablero);
                             }
-                            // /* Prueba estados */
-
-                            // estado_juego_t estado = tablero_estado(tablero, encontro_mina);
-                            // if (estado == JUEGO_GANADO)
-                            // {
-                            //     puts("¡Ganaste!");
-                            // }
-                            // else if (estado == JUEGO_PERDIDO)
-                            // {
-                            //     puts("Perdiste");
-                            // }
                         }
                         else
                         {
@@ -221,7 +158,21 @@ int main(void)
                     }
                     else if (accion == ACCION_HINT)
                     {
-                        puts("HINT: sin implementar");
+                        size_t fila_pista = 0;
+                        size_t columna_pista = 0;
+                        int pista_encontrada = 0;
+                        
+                        pista_encontrada = tablero_hint_seguro(tablero, &fila_pista, &columna_pista);
+
+                        if (pista_encontrada == 1)
+                        {
+                            printf("\n===> PISTA: ¡Es seguro revelar la celda (%zu, %zu)!\n\n", fila_pista, columna_pista);
+                        }
+                        else
+                        {
+                            puts("\n===> PISTA: No se encontró ninguna jugada obvia. ¡Suerte!\n");
+                        }
+                        /* No reimprimimos el tablero, solo damos el mensaje. El jugador debe ingresar la jugada manualmente. */
                     }
                     else if (accion == ACCION_SALIR)
                     {
